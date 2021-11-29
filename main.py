@@ -1,13 +1,28 @@
+from typing import Optional
+
 from fastapi import FastAPI
 from enum import Enum
+from pydantic import BaseModel
 
 app = FastAPI()
+
+
+class Item(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price: float
+    tax: Optional[float] = None
 
 
 class ModelName(str, Enum):
     alexnet = "alexnet"
     resnet = "resnet"
     lenet = "lenet"
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
 
 
 @app.get("/")
