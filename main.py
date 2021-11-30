@@ -71,9 +71,7 @@ async def read_file(file_path: str):
 async def update_item(
     *,
     item_id: int = Path(..., title="The ID of the item to get", ge=0, le=1000),
-    item: Item,
-    user: User,
-    importance: int = Body(...)
+    item: Item = Body(..., embed=True),
 ):
-    results = {"item_id": item_id, "item": item, "user": user, "importance": importance}
+    results = {"item_id": item_id, "item": item}
     return results
