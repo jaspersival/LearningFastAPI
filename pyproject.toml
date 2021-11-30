@@ -1,3 +1,9 @@
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+
 [tool.poetry]
 name = "learningfastapi"
 version = "0.1.0"
