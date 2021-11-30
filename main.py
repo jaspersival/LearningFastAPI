@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Path
 from enum import Enum
 
 app = FastAPI()
@@ -14,16 +14,10 @@ class ModelName(str, Enum):
 
 @app.get("/items/")
 async def read_items(
-    q: Optional[str] = Query(
-        None,
-        title="Query string",
-        description="Query string for the items to search in the database that have a good match",
-        min_length=3,
-        alias="item-query",
-        deprecated=True,
-    )
+    item_id: int = Path(..., title="The ID of the item to get"),
+    q: Optional[str] = Query(None, alias="item-query"),
 ):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    results = {"item_id": item_id}
     if q:
         results.update({"q": q})
     return results
