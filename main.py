@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Query, Path
+from fastapi import FastAPI, Query, Path, Body
 from enum import Enum
 
 from pydantic import BaseModel
@@ -19,6 +19,11 @@ class Item(BaseModel):
     description: Optional[str] = None
     price: float
     tax: Optional[float] = None
+
+
+class User(BaseModel):
+    username: str
+    full_name: Optional[str] = None
 
 
 @app.get("/items/")
@@ -66,12 +71,9 @@ async def read_file(file_path: str):
 async def update_item(
     *,
     item_id: int = Path(..., title="The ID of the item to get", ge=0, le=1000),
-    q: Optional[str] = None,
-    item: Optional[Item] = None
+    item: Item,
+    user: User,
+    importance: int = Body(...)
 ):
-    results = {"item_id": item_id}
-    if q:
-        results.update({"q": q})
-    if item:
-        results.update({"item": item})
+    results = {"item_id": item_id, "item": item, "user": user, "importance": importance}
     return results
