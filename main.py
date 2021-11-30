@@ -14,12 +14,18 @@ class ModelName(str, Enum):
     lenet = "lenet"
 
 
+class Image(BaseModel):
+    url: str
+    name: str
+
+
 class Item(BaseModel):
     name: str
     description: Optional[str] = None
     price: float
     tax: Optional[float] = None
     tags: set[str] = set()
+    image: Optional[Image] = None
 
 
 class User(BaseModel):
