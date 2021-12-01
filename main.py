@@ -1,53 +1,35 @@
 from typing import Optional
 
 from fastapi import FastAPI, Query
+from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
 from enum import Enum
 
 app = FastAPI()
 
 
-class ModelName(str, Enum):
-    alexnet = "alexnet"
-    resnet = "resnet"
-    lenet = "lenet"
+class Item(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    tax: float = 10.5
+    tags: list[str] = []
 
 
-@app.get("/items/")
-async def read_items(
-    q: Optional[str] = Query(
-        None,
-        title="Query string",
-        description="Query string for the items to search in the database that have a good match",
-        min_length=3,
-        alias="item-query",
-        deprecated=True,
-    )
-):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
+items = {
+    "foo": {"name": "Foo", "price": 50.2},
+    "bar": {"name": "Bar", "description": "The bartenders", "price": 62, "tax": 20.2},
+    "baz": {"name": "Baz", "description": None, "price": 50.2, "tax": 10.5, "tags": []},
+}
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.get("/items/{item_id}", response_model=Item)
+async def read_item(item_id: str):
+    return items[item_id]
 
 
-@app.get("/items/{item_id}")
-async def say_hello(item_id: int):
-    return {"item_id": item_id}
-
-
-@app.get("/models/{model_name}")
-async def get_model(model_name: ModelName):
-    if model_name == ModelName.alexnet:
-        return {"model_name": model_name, "message": "Deep Learning FTW"}
-    if model_name.value == "lenet":
-        return {"model_name": model_name, "message": "LeCNN all the images"}
-    return {"model_name": model_name, "message": "Have some residuals"}
-
-
-@app.get("/files/{file_path:path}")
-async def read_file(file_path: str):
-    return {"file_path": file_path}
+@app.put("/items/{item_id}", response_model=Item)
+async def update_item(item_id: str, item: Item):
+    update_item_encoded = jsonable_encoder(item)
+    items[item_id] = update_item_encoded
+    return update_item_encoded
