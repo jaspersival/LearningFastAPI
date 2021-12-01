@@ -1,7 +1,7 @@
 from enum import Enum
 
 from fastapi.responses import HTMLResponse
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 
 app = FastAPI()
 
@@ -13,8 +13,10 @@ class ModelName(str, Enum):
 
 
 @app.post("/files/")
-async def create_files(files: list[bytes] = File(...)):
-    return {"file_sizes": [len(file) for file in files]}
+async def create_file(
+    file: bytes = File(...), fileb: UploadFile = File(...), token: str = Form(...)
+):
+    return {"file_size": len(file), "token": token, "fileb_content_type": fileb.content_type}
 
 
 @app.post("/uploadfiles/")
