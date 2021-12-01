@@ -20,6 +20,7 @@ class Item(BaseModel):
     "/items/",
     response_model=Item,
     summary="Create an item",
+    response_description="The created item",
 )
 async def create_item(item: Item):
     """
@@ -42,3 +43,8 @@ async def read_items():
 @app.get("/users/", tags=["users"])
 async def read_users():
     return [{"username": "johndoe"}]
+
+
+@app.get("/elements/", tags=["items"], deprecated=True)
+async def read_elements():
+    return [{"item_id": "Foo"}]
