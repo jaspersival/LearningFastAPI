@@ -1,20 +1,11 @@
-from typing import Optional
-
-from fastapi import FastAPI, Depends
-from enum import Enum
+from fastapi import Depends, FastAPI
+from fastapi.security import OAuth2PasswordBearer
 
 app = FastAPI()
 
-
-async def common_parameters(q: Optional[str] = None, skip: int = 0, limit: int = 100):
-    return {"q": q, "skip": skip, "limit": limit}
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @app.get("/items/")
-async def read_items(commons: dict = Depends(common_parameters)):
-    return commons
-
-
-@app.get("/users/")
-async def read_users(commons: dict = Depends(common_parameters)):
-    return commons
+async def read_items(token: str = Depends(oauth2_scheme)):
+    return {"token": token}
