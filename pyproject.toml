@@ -17,6 +17,8 @@ uvicorn = {extras = ["standard"], version = "^0.15.0"}
 black = "^21.11b1"
 isort = "^5.10.1"
 python-multipart = "^0.0.5"
+python-jose = "^3.3.0"
+cryptography = "^36.0.1"
 
 [tool.poetry.dev-dependencies]
 
