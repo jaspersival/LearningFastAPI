@@ -1,9 +1,10 @@
 from typing import Optional
-
+from datetime import datetime, timedelta
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from starlette import status
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 SECRET_KEY = "2ad94f61a13414a6f9f90e2d07b09d37275e03910dd6139fd7e29e36236fe930"
@@ -68,6 +69,17 @@ def authenticate_user(fake_db, username: str, password: str):
     if not verify_password(password, user.hashed_password):
         return False
     return user
+
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
