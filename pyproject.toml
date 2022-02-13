@@ -12,11 +12,12 @@ authors = ["Jasper Sival <jaspersival@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.70.0"
+fastapi = "^0.73.0"
 uvicorn = {extras = ["standard"], version = "^0.15.0"}
 black = "^21.11b1"
 isort = "^5.10.1"
 python-multipart = "^0.0.5"
+SQLAlchemy = "^1.4.31"
 
 [tool.poetry.dev-dependencies]
 
